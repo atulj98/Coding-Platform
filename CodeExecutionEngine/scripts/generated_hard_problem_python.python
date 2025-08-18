@@ -1,0 +1,194 @@
+import json
+import sys
+from typing import List, Optional, Any
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def parse_int_array(s):
+    """Parse string representation of integer array"""
+    if not s or s == "[]" or s == "null":
+        return []
+    try:
+        return json.loads(s)
+    except json.JSONDecodeError:
+        # Fallback parsing
+        s = s.strip('[]')
+        if not s:
+            return []
+        return [int(x.strip()) for x in s.split(',') if x.strip()]
+
+def parse_string_array(s):
+    """Parse string representation of string array"""
+    if not s or s == "[]" or s == "null":
+        return []
+    try:
+        return json.loads(s)
+    except json.JSONDecodeError:
+        # Fallback parsing
+        s = s.strip('[]')
+        if not s:
+            return []
+        return [x.strip().strip('"') for x in s.split(',') if x.strip()]
+
+def create_linked_list(vals):
+    """Create linked list from array of values"""
+    if not vals:
+        return None
+    head = ListNode(vals[0])
+    current = head
+    for val in vals[1:]:
+        current.next = ListNode(val)
+        current = current.next
+    return head
+
+def linked_list_to_list(head):
+    """Convert linked list to array"""
+    result = []
+    while head:
+        result.append(head.val)
+        head = head.next
+    return result
+
+def safe_eval(s):
+    """Safely evaluate simple expressions"""
+    try:
+        return eval(s)
+    except:
+        return s
+
+class Solution:
+    if len(nums1) > len(nums2):
+                return self.findMedianSortedArrays(nums2, nums1)
+            
+            x, y = len(nums1), len(nums2)
+            low, high = 0, x
+            
+            while low <= high:
+                cutx = (low + high) // 2
+                cuty = (x + y + 1) // 2 - cutx
+                
+                maxleftx = float('-inf') if cutx == 0 else nums1[cutx - 1]
+                minrightx = float('inf') if cutx == x else nums1[cutx]
+                
+                maxlefty = float('-inf') if cuty == 0 else nums2[cuty - 1]
+                minrighty = float('inf') if cuty == y else nums2[cuty]
+                
+                if maxleftx <= minrighty and maxlefty <= minrightx:
+                    if (x + y) % 2 == 0:
+                        return (max(maxleftx, maxlefty) + min(minrightx, minrighty)) / 2.0
+                    else:
+                        return float(max(maxleftx, maxlefty))
+                elif maxleftx > minrighty:
+                    high = cutx - 1
+                else:
+                    low = cutx + 1
+            
+            return 1.0
+
+def main():
+    solution = Solution()
+    try:
+        # Test case 1
+        arg0_0 = parse_int_array('[1,3]
+[2]')
+        arg0_1 = parse_int_array('')
+        result = solution.findMedianSortedArrays(arg0_0, arg0_1)
+        if isinstance(result, ListNode):
+            output = linked_list_to_list(result)
+        else:
+            output = result
+        print(f"Test 1 - Output: {output}, Expected: 2.0")
+
+        # Test case 2
+        arg1_0 = parse_int_array('[1,2]
+[3,4]')
+        arg1_1 = parse_int_array('')
+        result = solution.findMedianSortedArrays(arg1_0, arg1_1)
+        if isinstance(result, ListNode):
+            output = linked_list_to_list(result)
+        else:
+            output = result
+        print(f"Test 2 - Output: {output}, Expected: 2.5")
+
+        # Test case 3
+        arg2_0 = parse_int_array('[0,0]
+[0,0]')
+        arg2_1 = parse_int_array('')
+        result = solution.findMedianSortedArrays(arg2_0, arg2_1)
+        if isinstance(result, ListNode):
+            output = linked_list_to_list(result)
+        else:
+            output = result
+        print(f"Test 3 - Output: {output}, Expected: 0.0")
+
+        # Test case 4
+        arg3_0 = parse_int_array('[]
+[1]')
+        arg3_1 = parse_int_array('')
+        result = solution.findMedianSortedArrays(arg3_0, arg3_1)
+        if isinstance(result, ListNode):
+            output = linked_list_to_list(result)
+        else:
+            output = result
+        print(f"Test 4 - Output: {output}, Expected: 1.0")
+
+        # Test case 5
+        arg4_0 = parse_int_array('[2]
+[]')
+        arg4_1 = parse_int_array('')
+        result = solution.findMedianSortedArrays(arg4_0, arg4_1)
+        if isinstance(result, ListNode):
+            output = linked_list_to_list(result)
+        else:
+            output = result
+        print(f"Test 5 - Output: {output}, Expected: 2.0")
+
+        # Test case 6
+        arg5_0 = parse_int_array('[1,3,8,9,15]
+[7,11,18,19,21,25]')
+        arg5_1 = parse_int_array('')
+        result = solution.findMedianSortedArrays(arg5_0, arg5_1)
+        if isinstance(result, ListNode):
+            output = linked_list_to_list(result)
+        else:
+            output = result
+        print(f"Test 6 - Output: {output}, Expected: 11.0")
+
+        # Test case 7
+        arg6_0 = parse_int_array('[23,26,31,35]
+[3,5,7,9,11,16]')
+        arg6_1 = parse_int_array('')
+        result = solution.findMedianSortedArrays(arg6_0, arg6_1)
+        if isinstance(result, ListNode):
+            output = linked_list_to_list(result)
+        else:
+            output = result
+        print(f"Test 7 - Output: {output}, Expected: 13.5")
+
+        # Test case 8
+        arg7_0 = parse_int_array('[1,2,3,4,5]
+[6,7,8,9,10]')
+        arg7_1 = parse_int_array('')
+        result = solution.findMedianSortedArrays(arg7_0, arg7_1)
+        if isinstance(result, ListNode):
+            output = linked_list_to_list(result)
+        else:
+            output = result
+        print(f"Test 8 - Output: {output}, Expected: 5.5")
+
+    except Exception as e:
+        print(f"Error during execution: {e}", file=sys.stderr)
+        return 1
+    return 0
+
+if __name__ == "__main__":
+    main()
