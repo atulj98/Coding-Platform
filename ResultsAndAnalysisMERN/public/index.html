@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results and Analysis MERN - Test Frontend</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Results and Analysis MERN - Test Interface</h1>
+            <p>Test the Results and Analysis microservice endpoints</p>
+            <div class="data-loader">
+                <button id="loadDataBtn" onclick="loadInitialData()">Load Initial Data</button>
+                <span id="dataStatus" class="status"></span>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('results')">Results</button>
+            <button class="tab-button" onclick="showTab('analysis')">Analysis</button>
+            <button class="tab-button" onclick="showTab('health')">Health Check</button>
+        </div>
+
+        <!-- Results Tab -->
+        <div id="results" class="tab-content active">
+            <h2>Results Management</h2>
+            
+            <!-- Get Submission Results -->
+            <div class="section">
+                <h3>Get Submission Results</h3>
+                <form id="getResultsForm">
+                    <div class="form-row">
+                        <select id="getSubmissionId" required>
+                            <option value="">Select Submission</option>
+                        </select>
+                        <button type="button" onclick="refreshSubmissions()">Refresh</button>
+                    </div>
+                    <button type="submit">Get Results</button>
+                </form>
+            </div>
+
+            <!-- Get User Results -->
+            <div class="section">
+                <h3>Get User Results History</h3>
+                <form id="getUserResultsForm">
+                    <div class="form-row">
+                        <select id="getUserId" required>
+                            <option value="">Select User</option>
+                        </select>
+                        <select id="filterProblemId">
+                            <option value="">All Problems</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="page" placeholder="Page (default: 1)" min="1" value="1">
+                        <input type="number" id="limit" placeholder="Limit (default: 10)" min="1" max="50" value="10">
+                        <select id="filterStatus">
+                            <option value="">All Statuses</option>
+                            <option value="PENDING">PENDING</option>
+                            <option value="RUNNING">RUNNING</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                            <option value="ERROR">ERROR</option>
+                            <option value="TIMEOUT">TIMEOUT</option>
+                        </select>
+                    </div>
+                    <button type="submit">Get User Results</button>
+                </form>
+            </div>
+
+            <!-- Get Problem Stats -->
+            <div class="section">
+                <h3>Get Problem Statistics</h3>
+                <form id="getProblemStatsForm">
+                    <select id="getProblemId" required>
+                        <option value="">Select Problem</option>
+                    </select>
+                    <button type="submit">Get Problem Stats</button>
+                </form>
+            </div>
+
+            <!-- Get User Problem Submissions -->
+            <div class="section">
+                <h3>Get User Problem Submissions</h3>
+                <form id="getUserProblemForm">
+                    <div class="form-row">
+                        <select id="userProblemUserId" required>
+                            <option value="">Select User</option>
+                        </select>
+                        <select id="userProblemProblemId" required>
+                            <option value="">Select Problem</option>
+                        </select>
+                    </div>
+                    <button type="submit">Get Submissions</button>
+                </form>
+            </div>
+
+            <!-- Get Recent Submissions -->
+            <div class="section">
+                <h3>Get Recent Submissions</h3>
+                <form id="getRecentForm">
+                    <input type="number" id="recentLimit" placeholder="Limit (default: 10)" min="1" max="100" value="10">
+                    <button type="submit">Get Recent Submissions</button>
+                </form>
+            </div>
+
+            <!-- Get Submission Trends -->
+            <div class="section">
+                <h3>Get Submission Trends</h3>
+                <form id="getTrendsForm">
+                    <input type="number" id="trendsDays" placeholder="Days (default: 30)" min="1" max="365" value="30">
+                    <button type="submit">Get Trends</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Analysis Tab -->
+        <div id="analysis" class="tab-content">
+            <h2>Analytics and Analysis</h2>
+            
+            <!-- User Performance -->
+            <div class="section">
+                <h3>User Performance Analysis</h3>
+                <form id="userPerformanceForm">
+                    <div class="form-row">
+                        <select id="perfUserId" required>
+                            <option value="">Select User</option>
+                        </select>
+                        <select id="timeframe">
+                            <option value="7d">Last 7 days</option>
+                            <option value="30d" selected>Last 30 days</option>
+                            <option value="90d">Last 90 days</option>
+                            <option value="all">All time</option>
+                        </select>
+                    </div>
+                    <button type="submit">Get Performance</button>
+                </form>
+            </div>
+
+            <!-- Problem Difficulty -->
+            <div class="section">
+                <h3>Problem Difficulty Analysis</h3>
+                <form id="problemDifficultyForm">
+                    <select id="diffProblemId" required>
+                        <option value="">Select Problem</option>
+                    </select>
+                    <button type="submit">Analyze Difficulty</button>
+                </form>
+            </div>
+
+            <!-- Submission Trends -->
+            <div class="section">
+                <h3>Submission Trends</h3>
+                <form id="submissionTrendsForm">
+                    <div class="form-row">
+                        <select id="period">
+                            <option value="daily">Daily</option>
+                            <option value="weekly" selected>Weekly</option>
+                        </select>
+                        <input type="number" id="trendsLimit" placeholder="Limit (default: 10)" min="1" max="50" value="10">
+                    </div>
+                    <button type="submit">Get Trends</button>
+                </form>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="section">
+                <h3>Leaderboard</h3>
+                <form id="leaderboardForm">
+                    <div class="form-row">
+                        <input type="number" id="leaderLimit" placeholder="Limit (default: 50)" min="1" max="100" value="50">
+                        <select id="leaderTimeframe">
+                            <option value="7d">Last 7 days</option>
+                            <option value="30d">Last 30 days</option>
+                            <option value="90d">Last 90 days</option>
+                            <option value="all" selected>All time</option>
+                        </select>
+                    </div>
+                    <button type="submit">Get Leaderboard</button>
+                </form>
+            </div>
+
+            <!-- Detailed Analytics -->
+            <div class="section">
+                <h3>Detailed User Analytics</h3>
+                <form id="detailedAnalyticsForm">
+                    <select id="analyticsUserId" required>
+                        <option value="">Select User</option>
+                    </select>
+                    <button type="submit">Get Detailed Analytics</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Health Check Tab -->
+        <div id="health" class="tab-content">
+            <h2>Health Check</h2>
+            <div class="section">
+                <button id="healthCheckBtn">Check Service Health</button>
+            </div>
+        </div>
+
+        <!-- Response Display -->
+        <div class="response-section">
+            <h3>Response</h3>
+            <div id="loading" class="loading hidden">Loading...</div>
+            <pre id="response"></pre>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

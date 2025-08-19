@@ -1,0 +1,59 @@
+{
+  "title": "Longest Palindromic Subsequence",
+  "description": "Given a string `s`, return the length of the longest palindromic subsequence in `s`.\n\nA **subsequence** is a sequence that can be derived from another string by deleting some or no elements without changing the order of the remaining elements.\nA **palindrome** is a sequence that reads the same backward as forward.",
+  "difficulty": "hard",
+  "tags": ["dynamic programming", "strings", "recursion", "memoization"],
+  "timeLimit": 2000,
+  "memoryLimit": 256,
+  "examples": [
+    {
+      "input": "s = \"bbbab\"",
+      "output": "4",
+      "explanation": "One possible longest palindromic subsequence is \"bbbb\"."
+    },
+    {
+      "input": "s = \"cbbd\"",
+      "output": "2",
+      "explanation": "The longest palindromic subsequence is \"bb\"."
+    },
+    {
+      "input": "s = \"abcdcba\"",
+      "output": "7",
+      "explanation": "The whole string is a palindrome."
+    }
+  ],
+  "constraints": "- `1 <= s.length <= 1000`\n- `s` consists only of lowercase English letters.",
+  "hints": [
+    "Use dynamic programming to solve the subproblems of s[i...j].",
+    "Define dp[i][j] as the length of the longest palindromic subsequence between indices i and j.",
+    "If s[i] == s[j], then dp[i][j] = dp[i+1][j-1] + 2."
+  ],
+  "isActive": true,
+  "testCases": [
+    {
+      "input": "{\"s\": \"bbbab\"}",
+      "expectedOutput": "4",
+      "isHidden": false
+    },
+    {
+      "input": "{\"s\": \"cbbd\"}",
+      "expectedOutput": "2",
+      "isHidden": false
+    },
+    {
+      "input": "{\"s\": \"abcdcba\"}",
+      "expectedOutput": "7",
+      "isHidden": false
+    },
+    {
+      "input": "{\"s\": \"a\"}",
+      "expectedOutput": "1",
+      "isHidden": true
+    },
+    {
+      "input": "{\"s\": \"agbdba\"}",
+      "expectedOutput": "5",
+      "isHidden": true
+    }
+  ]
+}
