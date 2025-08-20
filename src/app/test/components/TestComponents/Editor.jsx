@@ -1,12 +1,15 @@
-"use client"; // Ensures it runs only on the client side
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Editor, { useMonaco } from "@monaco-editor/react";
 
-const CodeEditor = ({ question }) => {
+const CodeEditor = ({ question, darkThemeOn }) => {
     const supportedLanguages = question.supportedLanguages;
-
     const monaco = useMonaco();
+    
+    // Add a state to track if the theme is ready
+    const [isThemeReady, setIsThemeReady] = useState(false);
+
     const [language, setLanguage] = useState(supportedLanguages[0].id);
     const [code, setCode] = useState(supportedLanguages[0].template);
     const [output, setOutput] = useState("");
@@ -17,13 +20,12 @@ const CodeEditor = ({ question }) => {
             const defaultLang = question.supportedLanguages[0];
             setLanguage(defaultLang.id);
             setCode(defaultLang.template);
-            setCodeMap({
-                [defaultLang.id]: defaultLang.template,
-            });
+            setCodeMap({ [defaultLang.id]: defaultLang.template });
         }
     }, [question]);
 
     useEffect(() => {
+        // This effect runs when the monaco instance is available
         if (monaco) {
             monaco.editor.defineTheme("custom-dark", {
                 base: "vs-dark",
@@ -41,39 +43,37 @@ const CodeEditor = ({ question }) => {
                 },
             });
 
-            monaco.editor.setTheme("custom-dark");
+            setIsThemeReady(true);
         }
     }, [monaco]);
 
+    
     const handleLanguageChange = (newLangId) => {
         const selectedLang = supportedLanguages.find((lang) => lang.id === newLangId);
         if (!selectedLang) return;
-
-        setCodeMap((prev) => ({
-            ...prev,
-            [language]: code,
-        }));
-
+        setCodeMap((prev) => ({ ...prev, [language]: code }));
         setLanguage(newLangId);
         setCode(codeMap[newLangId] || selectedLang.template);
     };
-
-    const handleRunCode = () => {
-        setOutput("Code executed successfully!\nOutput: 42");
-    };
-
-    const submitCodeHandler = () => {
-        setOutput("Submit clicked\n".repeat(7));
-    };
+    const handleRunCode = () => setOutput("Code executed successfully!\nOutput: 42");
+    const submitCodeHandler = () => setOutput("Submit clicked\n".repeat(7));
 
     return (
-        <div className="min-h-screen bg-[#0d1929] text-white p-6 space-y-6">
-            {/* Language Selector */}
+        <div
+            className={`min-h-screen p-6 space-y-6 ${
+                darkThemeOn ? 'bg-[#0d1929] text-white' : 'bg-white text-gray-900'
+            }`}
+        >
+            {/* ... (Language Selector) ... */}
             <div className="flex justify-between items-center">
                 <select
                     value={language}
                     onChange={(e) => handleLanguageChange(e.target.value)}
-                    className="bg-gray-800 text-white p-2 rounded"
+                    className={`p-2 rounded ${
+                        darkThemeOn
+                            ? 'bg-gray-800 text-white'
+                            : 'bg-gray-200 text-gray-900'
+                    }`}
                 >
                     {supportedLanguages.map((lang) => (
                         <option key={lang.id} value={lang.id}>
@@ -84,51 +84,48 @@ const CodeEditor = ({ question }) => {
             </div>
 
             {/* Monaco Editor */}
-            <div className="border border-gray-700 rounded overflow-hidden">
-                <Editor
-                    height="60vh"
-                    theme="custom-dark"
-                    language={language}
-                    value={code}
-                    onChange={(value) => setCode(value)}
-                    options={{
-                        fontSize: 14,
-                        minimap: { enabled: false },
-                        wordWrap: "on",
-                        automaticLayout: true,
-                    }}
-                />
+            <div
+                className={`rounded overflow-hidden border ${
+                    darkThemeOn ? 'border-gray-700' : 'border-gray-200'
+                }`}
+            >
+                {/* Conditionally render the Editor only when the theme is ready */}
+                {isThemeReady ? (
+                    <Editor
+                        height="60vh"
+                        theme={darkThemeOn ? 'custom-dark' : 'light'}
+                        language={language}
+                        value={code}
+                        onChange={(value) => setCode(value)}
+                        options={{
+                            fontSize: 14,
+                            minimap: { enabled: false },
+                            wordWrap: "on",
+                            automaticLayout: true,
+                        }}
+                    />
+                ) : (
+        
+                    <div className="h-[60vh] w-full flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+                        <p>Loading Editor...</p>
+                    </div>
+                )}
             </div>
-
-            {/* Action Buttons */}
+            
+            {/* ... (Action Buttons and Output Console) ... */}
             <div className="flex gap-4 justify-between">
                 <div className="flex gap-4">
-                    <button
-                        onClick={handleRunCode}
-                        className="bg-[#05a636] hover:bg-[#037325] px-4 py-2 rounded cursor-pointer"
-                    >
-                        Run Code
-                    </button>
-
-                    <button
-                        onClick={submitCodeHandler}
-                        className="bg-[#155dfc] hover:bg-[#0f4ac9] px-4 py-2 rounded cursor-pointer"
-                    >
-                        Submit
-                    </button>
+                    <button onClick={handleRunCode} className="bg-[#05a636] hover:bg-[#037325] px-4 py-2 rounded cursor-pointer text-white">Run Code</button>
+                    <button onClick={submitCodeHandler} className="bg-[#155dfc] hover:bg-[#0f4ac9] px-4 py-2 rounded cursor-pointer text-white">Submit</button>
                 </div>
-
-                {/* Icon Buttons */}
-                <div className="flex gap-2">
-                    <img width={20} src="/other_assets/assets/CodeEditor/saveIcon.svg" alt="save button" />
-                    <img width={20} src="/other_assets/assets/CodeEditor/downloadIcon.svg" alt="download button" />
-                    <img width={20} src="/other_assets/assets/CodeEditor/settingIcon.svg" alt="setting button" />
+                <div className="flex gap-2 items-center">
+                    <img width={20} src="/other_assets/assets/CodeEditor/saveIcon.svg" alt="save button" className={darkThemeOn ? 'filter invert' : ''} />
+                    <img width={20} src="/other_assets/assets/CodeEditor/downloadIcon.svg" alt="download button" className={darkThemeOn ? 'filter invert' : ''} />
+                    <img width={20} src="/other_assets/assets/CodeEditor/settingIcon.svg" alt="setting button" className={darkThemeOn ? 'filter invert' : ''} />
                 </div>
             </div>
-
-            {/* Output Console */}
-            <div className="bg-black text-green-200 p-4 rounded h-40 overflow-auto font-mono text-sm">
-                <pre className="pb-4">{output || "Output will appear here ..."}</pre>
+            <div className={`p-4 rounded h-40 overflow-auto font-mono text-sm ${ darkThemeOn ? 'bg-black text-green-200' : 'bg-gray-100 text-gray-800'}`}>
+                <pre>{output || "Output will appear here ..."}</pre>
             </div>
         </div>
     );

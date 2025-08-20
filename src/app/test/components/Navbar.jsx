@@ -1,87 +1,34 @@
+// components/Navbar.jsx
 'use client';
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
+
+import React from 'react';
 import Timer from './TestComponents/timer';
-import Sidebar from './TestComponents/Sidebar';
+import ThemeSlider from './TestComponents/ThemeToggle';
 
-const Navbar = ({ problems, currProb, changeQuesHandler, setQue_no }) => {
-  const [showSidebar, setShowSidebar] = useState(false);
-
-  useEffect(() => {
-    // Browser API check to avoid SSR errors
-    if (typeof window !== 'undefined' && 'getBattery' in navigator) {
-      navigator.getBattery().then((battery) => {
-        console.log('Battery level:', battery.level);
-      });
-    }
-  }, []);
-
-  const sidebarHandler = () => {
-    setShowSidebar(!showSidebar);
-  };
-
+const Navbar = ({darkThemeOn, setDarkThemeOn}) => {
   const submitHandler = () => {
     console.log('Submit clicked!');
-    // Submit handler logic here
   };
 
   return (
-    <div>
-      {/* Navbar */}
-      <div className="flex bg-[#dbeafe] py-2 px-6 justify-between">
-        {/* Left Section - Logo and Sidebar Toggle */}
-        <div className="flex gap-2 items-center">
-          <div className="flex items-center cursor-pointer">
-            <button onClick={sidebarHandler} className="cursor-pointer">
-              <Image
-                width={32}
-                height={32}
-                src={
-                  showSidebar
-                    ? '/other_assets/assets/CodeEditor/cross.svg'
-                    : '/other_assets/assets/CodeEditor/hamburger.svg'
-                }
-                alt="question menu"
-              />
-            </button>
-          </div>
-
-          <div>
-            <h1 className="p-0 text-3xl text-black font-semibold">Coding Platform</h1>
-          </div>
-        </div>
-
-        {/* Right Section - Timer and Finish Button */}
-        <div className="flex flex-row-reverse gap-2">
-          <button
-            className="px-4 cursor-pointer bg-[#155dfc] text-white rounded-sm"
-            onClick={submitHandler}
-          >
-            Finish Test
-          </button>
-          <Timer />
-        </div>
+    // Add these classes -> fixed top-0 left-0 w-full z-50
+    <div className={`fixed top-0 left-0 w-full z-50 flex ${darkThemeOn ? "bg-gray-900" : "bg-blue-100"}  py-2 px-6 justify-between text-black dark:text-white shadow-md`}>
+      {/* Left Section */}
+      <div className="flex gap-4 items-center">
+        {/* The button for your sidebar toggle would go here */}
+        <h1 className={`${darkThemeOn ? "text-white" : "text-black"} p-0 text-3xl font-semibold`}>Coding Platform</h1>
       </div>
 
-      {/* Backdrop */}
-      {showSidebar && (
-        <div
-          onClick={() => setShowSidebar(false)}
-          className="fixed top-16 left-0 w-full h-[calc(100vh-4rem)] bg-black opacity-30 z-30"
-        />
-      )}
-
-      {/* Sidebar */}
-      <div
-        className={`fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-white z-40 shadow-md transform transition-transform duration-300 ease-in-out 
-          ${showSidebar ? 'translate-x-0' : '-translate-x-full'}`}
-      >
-        <Sidebar
-          problems={problems}
-          currProb={currProb}
-          changeQuesHandler={changeQuesHandler}
-          setShowSidebar={setShowSidebar}
-        />
+      {/* Right Section */}
+      <div className="flex items-center gap-4">
+        <ThemeSlider darkThemeOn={darkThemeOn} setDarkThemeOn={setDarkThemeOn} />
+        <Timer />
+        <button
+          className="px-4 py-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+          onClick={submitHandler}
+        >
+          Finish Test
+        </button>
       </div>
     </div>
   );
